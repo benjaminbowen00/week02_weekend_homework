@@ -3,6 +3,7 @@ require_relative('../db/sql_runner.rb')
 
 class Film
   attr_accessor :title, :price
+  attr_reader :id
 
   def initialize(options)
     @title = options['title']
@@ -27,6 +28,12 @@ class Film
     SqlRunner.run(sql, values)
   end
 
+  def update
+    sql = 'UPDATE films SET title = $1,  price = $2 WHERE id = $3'
+    values = [@title, @price, @id]
+    SqlRunner.run(sql, values)
+  end
+
   def update_title(title)
     sql = 'UPDATE films SET title = $1 WHERE id = $2'
     values = [title, @id]
@@ -40,6 +47,14 @@ class Film
     SqlRunner.run(sql, values)
     self.price = amount
   end
+
+  def show_customers
+    sql = "SELECT customers.* FROM films INNER JOIN tickets ON films.id = tickets.film_id INNER JOIN customers ON tickets.customer_id = customers.id WHERE films.id = $1"
+    values = [@id]
+    result = SqlRunner.run(sql, values)
+    return result.map {|customer| Customer.new(customer)}
+  end
+
 
 
 end

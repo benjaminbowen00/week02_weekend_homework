@@ -1,9 +1,12 @@
 require('pg')
 require_relative('../db/sql_runner.rb')
+require_relative('./ticket.rb')
+require_relative('./film.rb')
 
 
 class Customer
   attr_accessor :name, :funds
+  attr_reader :id
 
   def initialize(options)
     @name = options['name']
@@ -28,6 +31,15 @@ class Customer
     SqlRunner.run(sql, values)
   end
 
+  #update in general after using setters in ruby
+
+  def update
+    sql = 'UPDATE customers SET name = $1, funds = $2 WHERE id = $3'
+    values = [@name, @funds, @id]
+    SqlRunner.run(sql, values)
+  end
+
+  #updates which go to the data base first
   def update_name(name)
     sql = 'UPDATE customers SET name = $1 WHERE id = $2'
     values = [name, @id]
@@ -41,4 +53,12 @@ class Customer
     SqlRunner.run(sql, values)
     self.funds = amount
   end
+
+  def show_films
+    sql = "SELECT films.* FROM films INNER JOIN tickets ON films.id = tickets.film_id INNER JOIN customers ON tickets.customer_id = customers.id WHERE customers.id = $1"
+    values = [@id]
+    result = SqlRunner.run(sql, values)
+    return result.map {|film| Film.new(film)}
+  end
+
 end
