@@ -20,6 +20,13 @@ class Customer
     ticket = Ticket.new(hash)
     ticket.save
     @funds -= film.price
+    return nil
+  end
+
+  def self.all()
+  sql = "SELECT * FROM customers"
+  customers = SqlRunner.run(sql)
+  return customers.map {|customer| Customer.new(customer)}
   end
 
   def number_of_tickets()

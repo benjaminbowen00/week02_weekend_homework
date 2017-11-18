@@ -8,4 +8,4 @@ def buy_ticket(film)
     ticket.save
     @funds -= film.price
   end
-We create the ticket object but it doesn't have a name - how can we do anything on this e.g. update in the console?
+We create the ticket object but it doesn't have a name - how can we do anything on this e.g. update in the console? - Same problem as before about a different object being created if we use the info from the database

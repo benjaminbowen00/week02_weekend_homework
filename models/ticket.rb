@@ -18,6 +18,12 @@ class Ticket
     @id = options['id'].to_i if options['id']
   end
 
+  def self.all()
+  sql = "SELECT * FROM tickets"
+  tickets = SqlRunner.run(sql)
+  return tickets.map {|ticket| Ticket.new(ticket)}
+  end
+
   def film
     sql = "SELECT * FROM films WHERE id = $1"
     values = [@film_id]

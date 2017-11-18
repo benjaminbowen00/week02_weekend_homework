@@ -20,6 +20,12 @@ class Film
     return SqlRunner.run(sql, values).first['count'].to_i
   end
 
+  def self.all()
+  sql = "SELECT * FROM films"
+  films = SqlRunner.run(sql)
+  return films.map {|film| Film.new(film)}
+  end
+
   def save()
     sql = 'INSERT INTO films (title, price) VALUES ($1, $2) Returning id'
     values = [@title, @price]
