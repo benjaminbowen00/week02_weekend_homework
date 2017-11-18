@@ -2,6 +2,7 @@ require('pg')
 require_relative('../db/sql_runner.rb')
 require_relative('./ticket.rb')
 require_relative('./film.rb')
+require_relative('./ticket.rb')
 
 
 class Customer
@@ -12,6 +13,19 @@ class Customer
     @name = options['name']
     @funds = options['funds']
     @id = options['id'].to_i if options['id']
+  end
+
+  def buy_ticket(film)
+    hash = {'customer_id'=> @id, 'film_id'=> film.id}
+    ticket = Ticket.new(hash)
+    ticket.save
+    @funds -= film.price
+  end
+
+  def number_of_tickets()
+    sql = 'SELECT COUNT(customer_id) FROM tickets WHERE customer_id = $1'
+    values = [@id]
+    return SqlRunner.run(sql, values).first['count'].to_i
   end
 
   def save()

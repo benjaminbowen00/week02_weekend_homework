@@ -30,8 +30,10 @@ film4.save
 # film3.update_title("Twenty Two Jump Street")
 # film3.update_price(100)
 ticket1 = Ticket.new({'customer_id' => customer1.id, 'film_id'=>film1.id})
-ticket2 = Ticket.new({'customer_id' => customer2.id, 'film_id'=>film1.id})
 ticket1.save
+ticket2 = Ticket.new({'customer_id' => customer2.id, 'film_id'=>film1.id})
+ticket2.save
+customer1.buy_ticket(film2)
 binding.pry
 
 # screening1 = Screening.new({'film_id' => film1.id, 'start_time' => '2017-01-08 04:00:00', 'empty_seats' => 20})

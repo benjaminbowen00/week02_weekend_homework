@@ -1,5 +1,8 @@
 require('pg')
 require_relative('../db/sql_runner.rb')
+require_relative('./customer.rb')
+require_relative('./ticket.rb')
+
 
 class Film
   attr_accessor :title, :price
@@ -9,6 +12,12 @@ class Film
     @title = options['title']
     @price = options['price']
     @id = options['id'].to_i if options['id']
+  end
+
+  def number_of_customers()
+    sql = 'SELECT COUNT(film_id) FROM tickets WHERE film_id = $1'
+    values = [@id]
+    return SqlRunner.run(sql, values).first['count'].to_i
   end
 
   def save()
