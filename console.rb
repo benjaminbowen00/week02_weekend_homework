@@ -2,10 +2,11 @@ require( 'pry-byebug' )
 require_relative( 'models/ticket' )
 require_relative( 'models/customer' )
 require_relative( 'models/film' )
-# require_relative( 'models/screening' )
+require_relative( 'models/screening' )
+
 
 Ticket.delete_all()
-# Screening.delete_all()
+Screening.delete_all()
 Customer.delete_all()
 Film.delete_all()
 customer1 = Customer.new({'name' => 'Keith', 'funds' => 250.00})
@@ -29,35 +30,36 @@ film4.save
 # film2.delete
 # film3.update_title("Twenty Two Jump Street")
 # film3.update_price(100)
-ticket1 = Ticket.new({'customer_id' => customer1.id, 'film_id'=>film1.id})
-ticket1.save
-ticket2 = Ticket.new({'customer_id' => customer2.id, 'film_id'=>film1.id})
-ticket2.save
-customer1.buy_ticket(film2)
+# ticket1 = Ticket.new({'customer_id' => customer1.id, 'film_id'=>film1.id})
+# ticket1.save
+# ticket2 = Ticket.new({'customer_id' => customer2.id, 'film_id'=>film1.id})
+# ticket2.save
+# customer1.buy_ticket(film2)
+
+
+screening1 = Screening.new({'film_id' => film1.id, 'start_time' => '2017-01-08 04:00:00', 'empty_seats' => 20})
+screening1.save
+screening2 = Screening.new({'film_id' => film2.id, 'start_time' => '2017-01-09 04:00:00', 'empty_seats' => 15})
+screening2.save
+screening3 = Screening.new({'film_id' => film3.id, 'start_time' => '2017-01-10 04:00:00', 'empty_seats' => 1})
+screening3.save
+screening4 = Screening.new({'film_id' => film4.id, 'start_time' => '2017-01-11 04:00:00', 'empty_seats' => 20})
+screening4.save
+screening5 = Screening.new({'film_id' => film4.id, 'start_time' => '2017-01-12 05:00:00', 'empty_seats' => 10})
+screening5.save
+#
+customer1.buy_ticket(screening2)
+customer2.buy_ticket(screening2)
+customer3.buy_ticket(screening2)
+customer4.buy_ticket(screening2)
+
+customer1.buy_ticket(screening3)
+
+customer1.buy_ticket(screening4)
+customer2.buy_ticket(screening4)
+customer3.buy_ticket(screening5)
+
 binding.pry
-
-# screening1 = Screening.new({'film_id' => film1.id, 'start_time' => '2017-01-08 04:00:00', 'empty_seats' => 20})
-# screening1.save
-# screening2 = Screening.new({'film_id' => film2.id, 'start_time' => '2017-01-09 04:00:00', 'empty_seats' => 15})
-# screening2.save
-# screening3 = Screening.new({'film_id' => film3.id, 'start_time' => '2017-01-10 04:00:00', 'empty_seats' => 1})
-# screening3.save
-# screening4 = Screening.new({'film_id' => film4.id, 'start_time' => '2017-01-11 04:00:00', 'empty_seats' => 20})
-# screening4.save
-# screening5 = Screening.new({'film_id' => film4.id, 'start_time' => '2017-01-12 04:00:00', 'empty_seats' => 10})
-# screening5.save
-#
-# customer1.buy_ticket(screening2)
-# customer2.buy_ticket(screening2)
-# customer3.buy_ticket(screening2)
-# customer4.buy_ticket(screening2)
-#
-# customer1.buy_ticket(screening3)
-#
-# customer1.buy_ticket(screening4)
-# customer2.buy_ticket(screening4)
-# customer3.buy_ticket(screening5)
-
 # Screening.most_popular should return screening2
 # binding.pry
 nil

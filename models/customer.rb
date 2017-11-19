@@ -15,13 +15,25 @@ class Customer
     @id = options['id'].to_i if options['id']
   end
 
-  def buy_ticket(film)
-    hash = {'customer_id'=> @id, 'film_id'=> film.id}
-    ticket = Ticket.new(hash)
+  def buy_ticket(screening)
+    ticket_hash = {'customer_id'=> @id, 'film_id'=> screening.film_id}
+    ticket = Ticket.new(ticket_hash)
     ticket.save
-    @funds -= film.price
+    sql = "SELECT films.price FROM films WHERE films.id = $1"
+    values = [screening.film_id]
+    price = SqlRunner.run(sql, values).first['price'].to_i
+    @funds -= price
     return nil
   end
+
+  #Did buy ticket based before I built the screening class:
+  # def buy_ticket(film)
+  #   hash = {'customer_id'=> @id, 'film_id'=> film.id}
+  #   ticket = Ticket.new(hash)
+  #   ticket.save
+  #   @funds -= film.price
+  #   return nil
+  # end
 
   def self.all()
   sql = "SELECT * FROM customers"
