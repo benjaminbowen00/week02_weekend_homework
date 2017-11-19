@@ -57,6 +57,7 @@ customer4.buy_ticket(screening2)
 
 customer1.buy_ticket(screening3)
 
+
 customer1.buy_ticket(screening4)
 customer2.buy_ticket(screening4)
 customer3.buy_ticket(screening5)

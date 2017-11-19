@@ -24,6 +24,13 @@ class Ticket
   return tickets.map {|ticket| Ticket.new(ticket)}
   end
 
+  def self.delete_all()
+    sql = 'DELETE FROM tickets'
+    SqlRunner.run(sql)
+  end
+
+
+  #Are these methods now redundant unlesswe explicity create the ticket object to apply them to?
   def screening()
     sql = "SELECT * FROM screenings WHERE id = $1"
     values = [@screening_id]
@@ -44,12 +51,7 @@ class Ticket
     return Customer.new(result[0])
   end
 
-  def self.delete_all()
-    sql = 'DELETE FROM tickets'
-    SqlRunner.run(sql)
-  end
-
-  def update
+  def update()
     sql = 'UPDATE tickets SET customer_id = $1, screening_id = $2 WHERE id = $3'
     values = [@customer_id, @screening_id, @id]
     SqlRunner.run(sql, values)

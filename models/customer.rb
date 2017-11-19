@@ -3,6 +3,8 @@ require_relative('../db/sql_runner.rb')
 require_relative('./ticket.rb')
 require_relative('./film.rb')
 require_relative('./ticket.rb')
+require_relative('./screening.rb')
+
 
 
 class Customer
@@ -16,14 +18,21 @@ class Customer
   end
 
   def buy_ticket(screening)
-    ticket_hash = {'customer_id'=> @id, 'screening_id'=> screening.id}
-    ticket = Ticket.new(ticket_hash)
-    ticket.save
-    sql = "SELECT films.price FROM films WHERE films.id = $1"
-    values = [screening.film_id]
-    price = SqlRunner.run(sql, values).first['price'].to_i
-    @funds -= price
-    return nil
+    if screening.empty_seats > 0
+      ticket_hash = {'customer_id'=> @id, 'screening_id'=> screening.id}
+      ticket = Ticket.new(ticket_hash)
+      ticket.save
+      sql = "SELECT films.price FROM films WHERE films.id = $1"
+      values = [screening.film_id]
+      price = SqlRunner.run(sql, values).first['price'].to_i
+      @funds -= price
+      self.update
+      screening.empty_seats -= 1
+      screening.update
+      return nil
+    else
+      return "No seats left"
+    end
   end
 
   #Did buy ticket based before I built the screening class:
@@ -73,19 +82,19 @@ class Customer
   end
 
   #updates which go to the data base first
-  def update_name(name)
-    sql = 'UPDATE customers SET name = $1 WHERE id = $2'
-    values = [name, @id]
-    SqlRunner.run(sql, values)
-    self.name = name
-  end
-
-  def update_funds(amount)
-    sql = 'UPDATE customers SET funds = $1 WHERE id = $2'
-    values = [amount, @id]
-    SqlRunner.run(sql, values)
-    self.funds = amount
-  end
+  # def update_name(name)
+  #   sql = 'UPDATE customers SET name = $1 WHERE id = $2'
+  #   values = [name, @id]
+  #   SqlRunner.run(sql, values)
+  #   self.name = name
+  # end
+  #
+  # def update_funds(amount)
+  #   sql = 'UPDATE customers SET funds = $1 WHERE id = $2'
+  #   values = [amount, @id]
+  #   SqlRunner.run(sql, values)
+  #   self.funds = amount
+  # end
 
   def show_films
     sql = "SELECT films.* FROM films INNER JOIN screenings ON screenings.film_id = films.id INNER JOIN tickets on screenings.id = tickets.screening_id INNER JOIN customers on customers.id = tickets.customer_id WHERE customers.id = $1"

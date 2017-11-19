@@ -37,4 +37,10 @@ class Screening
   return screenings.map {|screening| Screening.new(screening)}
   end
 
+  def self.most_popular()
+    sql = "SELECT screenings.*, COUNT(1) FROM tickets INNER JOIN screenings ON tickets.screening_id = screenings.id GROUP BY screenings.id ORDER BY count DESC LIMIT 1"
+    screening = SqlRunner.run(sql).first
+    return Screening.new(screening)
+  end
+
 end
