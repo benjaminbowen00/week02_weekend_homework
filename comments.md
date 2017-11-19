@@ -14,4 +14,4 @@ We create the ticket object but it doesn't have a name - how can we do anything 
 #Hadn't written the screenings delete_all class method and then got errors when trying to do the film delete all in console. If you have cascade delete then you don't need the delete_all on the many table as this is deleted when the 'one' table is deleted
 Remember to do cascade delete
 
-#Need to have a screening_id on the ticket (rather than the film_id)? This gives the film_id but also more information.
+#Need to have a screening_id on the ticket (rather than the film_id)? This gives the film_id but also more information. - otherwise the screening info is lost once the buy_ticket method is run on a customer.

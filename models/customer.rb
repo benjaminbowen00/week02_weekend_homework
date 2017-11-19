@@ -16,7 +16,7 @@ class Customer
   end
 
   def buy_ticket(screening)
-    ticket_hash = {'customer_id'=> @id, 'film_id'=> screening.film_id}
+    ticket_hash = {'customer_id'=> @id, 'screening_id'=> screening.id}
     ticket = Ticket.new(ticket_hash)
     ticket.save
     sql = "SELECT films.price FROM films WHERE films.id = $1"
@@ -88,7 +88,7 @@ class Customer
   end
 
   def show_films
-    sql = "SELECT films.* FROM films INNER JOIN tickets ON films.id = tickets.film_id INNER JOIN customers ON tickets.customer_id = customers.id WHERE customers.id = $1"
+    sql = "SELECT films.* FROM films INNER JOIN screenings ON screenings.film_id = films.id INNER JOIN tickets on screenings.id = tickets.screening_id INNER JOIN customers on customers.id = tickets.customer_id WHERE customers.id = $1"
     values = [@id]
     result = SqlRunner.run(sql, values)
     return result.map {|film| Film.new(film)}

@@ -14,11 +14,23 @@ class Film
     @id = options['id'].to_i if options['id']
   end
 
-  def number_of_customers()
-    sql = 'SELECT COUNT(film_id) FROM tickets WHERE film_id = $1'
-    values = [@id]
-    return SqlRunner.run(sql, values).first['count'].to_i
+  def self.most_popular_film_title
+  sql = 'SELECT films.title, COUNT(films.title) FROM tickets INNER JOIN screenings on tickets.screening_id = screenings.id INNER JOIN films on screenings.film_id = films.id GROUP BY title ORDER BY COUNT(films.title) DESC LIMIT 1'
+  return SqlRunner.run(sql)[0]['title']
   end
+
+  def most_popular_time
+  sql = 'SELECT screenings.start_time, count(tickets.screening_id) FROM tickets INNER JOIN screenings ON tickets.screening_id = screenings.id INNER JOIN films on screenings.film_id = films.id WHERE films.id = $1 GROUP BY screenings.start_time'
+  values = [@id]
+  return SqlRunner.run(sql, values)[0]['start_time']
+  end
+
+#NEED to redo
+  # def number_of_customers()
+  #   sql = 'SELECT COUNT(film_id) FROM tickets WHERE film_id = $1'
+  #   values = [@id]
+  #   return SqlRunner.run(sql, values).first['count'].to_i
+  # end
 
   def self.all()
   sql = "SELECT * FROM films"

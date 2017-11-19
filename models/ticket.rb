@@ -3,18 +3,18 @@ require_relative('../db/sql_runner.rb')
 
 class Ticket
 
-    attr_accessor :film_id, :customer_id
+    attr_accessor :screening_id, :customer_id
     attr_reader :id
 
   def save()
-    sql = 'INSERT INTO tickets (customer_id, film_id) VALUES ($1, $2) Returning id'
-    values = [@customer_id, @film_id]
+    sql = 'INSERT INTO tickets (customer_id, screening_id) VALUES ($1, $2) Returning id'
+    values = [@customer_id, @screening_id]
     @id = SqlRunner.run(sql, values).first['id'].to_i
   end
 
   def initialize(options)
-    @film_id = options['film_id'].to_i
     @customer_id = options['customer_id'].to_i
+    @screening_id = options['screening_id'].to_i
     @id = options['id'].to_i if options['id']
   end
 
@@ -24,14 +24,20 @@ class Ticket
   return tickets.map {|ticket| Ticket.new(ticket)}
   end
 
-  def film
-    sql = "SELECT * FROM films WHERE id = $1"
-    values = [@film_id]
+  def screening()
+    sql = "SELECT * FROM screenings WHERE id = $1"
+    values = [@screening_id]
     result = SqlRunner.run(sql, values)
-    return Film.new(result[0])
+    return Screening.new(result[0])
   end
 
-  def customer
+  def film_title()
+  sql = 'SELECT films.title FROM films INNER JOIN screenings on screenings.film_id = films.id INNER JOIN tickets ON screenings.id = tickets.screening_id WHERE tickets.id = $1'
+  values = [@id]
+  return SqlRunner.run(sql, values)[0]['title']
+  end
+
+  def customer()
     sql = "SELECT * FROM customers WHERE id = $1"
     values = [@customer_id]
     result = SqlRunner.run(sql, values)
@@ -44,8 +50,8 @@ class Ticket
   end
 
   def update
-    sql = 'UPDATE tickets SET customer_id = $1, film_id = $2 WHERE id = $3'
-    values = [@customer_id, @film_id, @id]
+    sql = 'UPDATE tickets SET customer_id = $1, screening_id = $2 WHERE id = $3'
+    values = [@customer_id, @screening_id, @id]
     SqlRunner.run(sql, values)
   end
 
